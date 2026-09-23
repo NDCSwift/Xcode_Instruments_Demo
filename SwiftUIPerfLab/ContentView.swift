@@ -6,7 +6,7 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             List(market.tickers) { ticker in
-                TickerRow(market: market, id: ticker.id)
+                TickerRow(ticker: ticker)
             }
             .navigationTitle("Market")
             .toolbar {
@@ -22,20 +22,17 @@ struct ContentView: View {
 }
 
 struct TickerRow: View {
-    let market: Market
-    let id: Int
+    let ticker: Ticker
 
     var body: some View {
-        if let ticker = market.tickers.first(where: { $0.id == id }) {
-            HStack {
-                Text(ticker.symbol)
-                    .font(.headline.monospaced())
-                Spacer()
-                Text(ticker.trend, format: .percent.precision(.fractionLength(2)))
-                    .foregroundStyle(ticker.trend >= 0 ? .green : .red)
-                Text(ticker.price, format: .currency(code: "USD"))
-                    .monospacedDigit()
-            }
+        HStack {
+            Text(ticker.symbol)
+                .font(.headline.monospaced())
+            Spacer()
+            Text(ticker.trend, format: .percent.precision(.fractionLength(2)))
+                .foregroundStyle(ticker.trend >= 0 ? .green : .red)
+            Text(ticker.price, format: .currency(code: "USD"))
+                .monospacedDigit()
         }
     }
 }

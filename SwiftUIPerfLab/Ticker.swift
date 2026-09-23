@@ -7,17 +7,20 @@ struct Ticker: Identifiable {
 
     var price: Double { history.last ?? 0 }
 
-    var trend: Double {
-        let smoothed = movingAverage(of: history, window: 100)
-        guard let first = smoothed.first, let last = smoothed.last, first != 0 else { return 0 }
-        return (last - first) / first
-    }
+    private(set) var trend: Double = 0
 
     mutating func record(_ price: Double) {
         history.append(price)
         if history.count > 2_000 {
             history.removeFirst()
         }
+        trend = Ticker.trend(of: history)
+    }
+
+    static func trend(of history: [Double]) -> Double {
+        let smoothed = movingAverage(of: history, window: 100)
+        guard let first = smoothed.first, let last = smoothed.last, first != 0 else { return 0 }
+        return (last - first) / first
     }
 
     static func sample(id: Int) -> Ticker {
@@ -29,7 +32,9 @@ struct Ticker: Identifiable {
             price *= Double.random(in: 0.99...1.01)
             history.append(price)
         }
-        return Ticker(id: id, symbol: symbol, history: history)
+        var ticker = Ticker(id: id, symbol: symbol, history: history)
+        ticker.trend = Ticker.trend(of: history)
+        return ticker
     }
 }
 

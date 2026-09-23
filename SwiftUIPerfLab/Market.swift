@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import os
 
 @MainActor
 @Observable
@@ -15,7 +16,11 @@ final class Market {
         }
     }
 
+    private let signposter = OSSignposter(subsystem: "com.noahdoescoding.SwiftUIPerfLab", category: .pointsOfInterest)
+
     func sortByTrend() {
-        tickers.sort { $0.trend > $1.trend }
+        signposter.withIntervalSignpost("Sort by Trend") {
+            tickers.sort { $0.trend > $1.trend }
+        }
     }
 }
