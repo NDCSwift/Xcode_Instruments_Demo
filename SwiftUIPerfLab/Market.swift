@@ -8,7 +8,7 @@ final class Market {
 
     func run() async {
         while !Task.isCancelled {
-            try? await Task.sleep(for: .milliseconds(50))
+            try? await Task.sleep(for: .milliseconds(500))
             let index = Int.random(in: tickers.indices)
             let next = tickers[index].price * Double.random(in: 0.98...1.02)
             tickers[index].record(next)
